@@ -32,4 +32,4 @@ const lcScraper = async (link) => {
     };
 };
 
-export default lcScraper;
+module.exports = { lcScraper };
