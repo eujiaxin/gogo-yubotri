@@ -6,7 +6,7 @@ require("dotenv").config();
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-async function addItem(question, difficulty, isSelf, topics) {
+async function addItem(link, question, difficulty, isSelf, topics) {
     try {
         const today = new Date();
         const rev1Date = new Date(today.getTime());
@@ -40,6 +40,9 @@ async function addItem(question, difficulty, isSelf, topics) {
                         name: difficulty,
                     },
                 },
+                Link: {
+                    url: link,
+                },
                 Topics: {
                     multi_select: notionTopics,
                 },
@@ -71,6 +74,7 @@ async function addItem(question, difficulty, isSelf, topics) {
         });
         console.log(response);
         console.log("Success! Entry added.");
+        return response;
     } catch (error) {
         console.error(error.body);
     }
@@ -83,17 +87,21 @@ const links = [
     "https://leetcode.com/problems/trapping-rain-water",
 ];
 const leetCodeToNotion = async (link) => {
-    const leetcodes = await Promise.all(
-        links.map(async (link) => lcScraper(link))
-    );
-
-    leetcodes.map((data) => {
-        addItem(data.question, data.difficulty, false, data.topics);
-    });
-
-    // lcScraper(link).then((data) =>
-    //     addItem(data.question, data.difficulty, data.isSelf, data.topics)
+    // const leetcodes = await Promise.all(
+    //     links.map(async (link) => lcScraper(link))
     // );
+
+    // leetcodes.map((data) => {
+    //     addItem(data.question, data.difficulty, false, data.topics);
+    // });
+
+    const res = lcScraper(link).then((data) =>
+        addItem(link, data.question, data.difficulty, data.isSelf, data.topics)
+    );
+    return res;
 };
 
-leetCodeToNotion("https://leetcode.com/problems/coin-change/");
+const oop = leetCodeToNotion(
+    "https://leetcode.com/problems/insert-interval/"
+).then((res) => console.log("FINALLY ITS HERE: " + res));
+// module.exports = { leetCodeToNotion };
