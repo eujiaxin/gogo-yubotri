@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer");
-
+// const fs = require("fs");
 const LINK = "https://leetcode.com/problems/coin-change/";
 
-const lcScraper = async (link) => {
+const lcScraper = async (link, isSelf = false) => {
     // set up browser
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -21,14 +21,28 @@ const lcScraper = async (link) => {
         (el) => el.textContent
     );
 
-    // TODO: scrape related topics (require clicking)
-    const relatedTopics = null;
+    // const [relatedTopics] = await page.$x('//div[text()="Related Topics"]');
+    // await relatedTopics.click();
+
+    // const html = await page.content();
+    // fs.writeFileSync("lc-" + questionTitle + ".html", html);
+
+    const relatedTopicsElements = await page.$$("div > a > span");
+
+    const topics = await Promise.all(
+        relatedTopicsElements.map((elem) =>
+            elem.evaluate((el) => el.textContent)
+        )
+    );
+
     await browser.close();
 
     return {
         question: questionTitle,
         difficulty: difficulty,
+        topics: topics,
         link: link,
+        isSelf: isSelf,
     };
 };
 
