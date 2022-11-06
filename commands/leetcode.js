@@ -26,9 +26,8 @@ module.exports = {
 
         await interaction.reply("Updating notion for " + linkInput + " ...");
         const result = await leetCodeToNotion(linkInput);
-        console.log("RESULT: " + result);
         await interaction.followUp({
-            content: "Created new notion page!!",
+            content: "Created new notion page: " + result.url,
         });
     },
 };
