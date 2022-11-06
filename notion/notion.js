@@ -101,7 +101,4 @@ const leetCodeToNotion = async (link) => {
     return res;
 };
 
-const oop = leetCodeToNotion(
-    "https://leetcode.com/problems/insert-interval/"
-).then((res) => console.log("FINALLY ITS HERE: " + res));
-// module.exports = { leetCodeToNotion };
+module.exports = { leetCodeToNotion };
