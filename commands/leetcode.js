@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { lcScraper } = require("../leetcode/lc_scraper");
+const { leetCodeToNotion } = require("../notion/notion");
 
 // data - command definition
 // execute - method that contains event handler functionality
@@ -12,14 +12,23 @@ module.exports = {
                 .setName("link")
                 .setDescription("The leetcode question link")
                 .setRequired(true)
+        )
+        .addBooleanOption((option) =>
+            option
+                .setName("solved")
+                .setDescription(
+                    "Solved for the first time? (default set to False)"
+                )
         ),
     async execute(interaction) {
         const linkInput =
             interaction.options.getString("link") ?? "No link provided";
-        // const lcQuestion = await lcScraper(linkInput).then(
-        //     (data) => data.difficulty + +" " + data.question
-        // );
 
-        await interaction.reply(linkInput);
+        await interaction.reply("Updating notion for " + linkInput + " ...");
+        const result = await leetCodeToNotion(linkInput);
+        console.log("RESULT: " + result);
+        await interaction.followUp({
+            content: "Created new notion page!!",
+        });
     },
 };
