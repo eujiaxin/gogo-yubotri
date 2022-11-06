@@ -1,16 +1,24 @@
 const { Client } = require("@notionhq/client");
+const { lcScraper } = require("../leetcode/lc_scraper");
+
 require("dotenv").config();
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-async function addItem(text, isSelf = false) {
+async function addItem(question, difficulty, isSelf, topics) {
     try {
         const today = new Date();
         const rev1Date = new Date(today.getTime());
         rev1Date.setDate(rev1Date.getDate() + 7);
         const rev2Date = new Date(rev1Date.getTime());
         rev2Date.setDate(rev2Date.getDate() + 7);
+
+        const notionTopics = topics.map((topic) => {
+            const topicObject = new Object();
+            topicObject.name = topic;
+            return topicObject;
+        });
 
         const response = await notion.pages.create({
             parent: { database_id: databaseId },
@@ -21,7 +29,7 @@ async function addItem(text, isSelf = false) {
                         {
                             type: "text",
                             text: {
-                                content: text,
+                                content: question,
                             },
                         },
                     ],
@@ -29,13 +37,16 @@ async function addItem(text, isSelf = false) {
                 Difficulty: {
                     type: "select",
                     select: {
-                        name: "Hard",
+                        name: difficulty,
                     },
+                },
+                Topics: {
+                    multi_select: notionTopics,
                 },
                 isSelf: {
                     type: "select",
                     select: {
-                        name: "N",
+                        name: isSelf ? "Y" : "N",
                     },
                 },
                 Date: {
@@ -65,4 +76,24 @@ async function addItem(text, isSelf = false) {
     }
 }
 
-addItem("LEETCODE X");
+const links = [
+    "https://leetcode.com/problems/coin-change/",
+    "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+    "https://leetcode.com/problems/two-sum/",
+    "https://leetcode.com/problems/trapping-rain-water",
+];
+const leetCodeToNotion = async (link) => {
+    const leetcodes = await Promise.all(
+        links.map(async (link) => lcScraper(link))
+    );
+
+    leetcodes.map((data) => {
+        addItem(data.question, data.difficulty, false, data.topics);
+    });
+
+    // lcScraper(link).then((data) =>
+    //     addItem(data.question, data.difficulty, data.isSelf, data.topics)
+    // );
+};
+
+leetCodeToNotion("https://leetcode.com/problems/coin-change/");
