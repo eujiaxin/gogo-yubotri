@@ -1,6 +1,5 @@
 node_modules/
 .eslinttc.json
 config.json
-package-lock.json
 package.json
 .env
