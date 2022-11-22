@@ -1,5 +1,4 @@
 node_modules/
 .eslinttc.json
 config.json
-package.json
 .env
