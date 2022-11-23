@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer");
-// const fs = require("fs");
-const LINK = "https://leetcode.com/problems/coin-change/";
+
+/**
+ * No longer used (use leetcode_api.js instead)
+ */
 
 const lcScraper = async (link, isSelf = false) => {
     // set up browser

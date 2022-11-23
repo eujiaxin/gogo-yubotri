@@ -1,5 +1,6 @@
 const { Client } = require("@notionhq/client");
-const { lcScraper } = require("../leetcode/lc_scraper");
+// const { lcScraper } = require("../leetcode/lc_scraper");
+const { lc_data } = require("../leetcode/leetcode_api");
 
 require("dotenv").config();
 
@@ -86,7 +87,7 @@ const links = [
     "https://leetcode.com/problems/two-sum/",
     "https://leetcode.com/problems/trapping-rain-water",
 ];
-const leetCodeToNotion = async (link) => {
+const leetCodeToNotion = async (link, isSelf) => {
     // const leetcodes = await Promise.all(
     //     links.map(async (link) => lcScraper(link))
     // );
@@ -95,8 +96,8 @@ const leetCodeToNotion = async (link) => {
     //     addItem(data.question, data.difficulty, false, data.topics);
     // });
 
-    const res = lcScraper(link).then((data) =>
-        addItem(link, data.question, data.difficulty, data.isSelf, data.topics)
+    const res = lc_data(link).then((data) =>
+        addItem(link, data.question, data.difficulty, isSelf, data.topics)
     );
     return res;
 };

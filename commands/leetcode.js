@@ -24,8 +24,10 @@ module.exports = {
         const linkInput =
             interaction.options.getString("link") ?? "No link provided";
 
+        const isSelfInput = interaction.options.getString("solved");
+
         await interaction.reply("Updating notion for " + linkInput + " ...");
-        const result = await leetCodeToNotion(linkInput);
+        const result = await leetCodeToNotion(linkInput, isSelfInput);
         await interaction.followUp({
             content: "Created new notion page: " + result.url,
         });
