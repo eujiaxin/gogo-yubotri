@@ -25,6 +25,7 @@ module.exports = {
             interaction.options.getString("link") ?? "No link provided";
 
         const isSelfInput = interaction.options.getBoolean("solved");
+        console.log("User chose for 'solved' input: " + isSelfInput);
 
         await interaction.reply("Updating notion for " + linkInput + " ...");
         const result = await leetCodeToNotion(linkInput, isSelfInput);
